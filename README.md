@@ -22,26 +22,33 @@ _For detailed status of this proposal see [TODO](#todo), below._
 # Motivations
 
 From https://github.com/rbuckton/proposal-regexp-features:
-> ECMAScript regular expressions have slowly improved over the years to adopt new > functionality commonly present in other languages, including:
+> ECMAScript regular expressions have slowly improved over the years to adopt new 
+> functionality commonly present in other languages, including:
 > 
 > - Unicode Support
 > - Named Capture Groups
 > - Match Indices
 > 
-> However, a large majority of other languages and libraries have a common set of > features that ECMAScript regular expressions currently lack.
-> Some of these features improve performance in degenerative cases such as backtracking > in complex patterns. Some of these features introduce
+> However, a large majority of other languages and libraries have a common set of 
+> features that ECMAScript regular expressions currently lack.
+> Some of these features improve performance in degenerative cases such as backtracking 
+> in complex patterns. Some of these features introduce
 > new tools for developers to write more powerful regular expressions.
 > 
-> As a result, ECMAScript developers wishing to leverage these capabilities are left with > few options, relying on native bindings to third-party
+> As a result, ECMAScript developers wishing to leverage these capabilities are left with 
+> few options, relying on native bindings to third-party
 > libraries in environments such as NodeJS, or server-side evaluation.
 > 
-> There are numerous applications for extending the ECMAScript regular expression feature > set, including:
+> There are numerous applications for extending the ECMAScript regular expression feature 
+> set, including:
 > 
 > - In-browser support for TextMate grammars for web based editors/IDEs.
-> - Improved performance for expressions through possessive quantifiers and backtracking > control.
+> - Improved performance for expressions through possessive quantifiers and backtracking 
+>   control.
 > - RegExp-based parsers that can support balanced brackets/parens.
 > - Documenting complex patterns *in the pattern itself*.
-> - Improved readability through the use of multi-line patterns and insignificant > whitespace.
+> - Improved readability through the use of multi-line patterns and insignificant 
+>   whitespace.
 
 > NOTE: See https://github.com/rbuckton/proposal-regexp-features for an overview of
 > how this proposal fits into other possible future features for Regular Expressions.
