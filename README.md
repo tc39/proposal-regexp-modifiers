@@ -1,7 +1,6 @@
 <!--#region:intro-->
 # Regular Expression pattern modifiers for ECMAScript
 
-> TODO: Replace this with a summary or introduction for your proposal.
 <!--#endregion:intro-->
 
 <!--#region:status-->
