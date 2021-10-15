@@ -13,7 +13,7 @@
     "ecmascript"
   ],
   "scripts": {
-    "build": "gulp build",
+    "compile": "gulp build",
     "start": "gulp start"
   },
   "license": "SEE LICENSE IN https://tc39.github.io/ecma262/#sec-copyright-and-software-license",
