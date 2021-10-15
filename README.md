@@ -1,5 +1,5 @@
 <!--#region:intro-->
-# Regular Expression pattern modifiers for ECMAScript
+# Regular Expression Pattern Modifiers for ECMAScript
 
 <!--#endregion:intro-->
 

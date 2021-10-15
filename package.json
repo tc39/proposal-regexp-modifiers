@@ -2,7 +2,7 @@
   "name": "proposal-regexp-modifiers",
   "version": "0.0.0",
   "private": true,
-  "description": "Regular Expression pattern modifiers for ECMAScript",
+  "description": "Regular Expression Pattern Modifiers for ECMAScript",
   "homepage": "https://github.com/rbuckton/proposal-regexp-modifiers#readme",
   "author": {
     "name": "Ron Buckton",
