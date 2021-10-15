@@ -1,0 +1,24 @@
+{
+  "generator-ecmascript-proposal": {
+    "promptValues": {
+      "hasChampion": true,
+      "championName": "Ron Buckton",
+      "championGithub": "rbuckton",
+      "spec": "https://rbuckton.github.io/proposal-regexp-modifiers",
+      "stage": "0",
+      "sections": [
+        "prior-art",
+        "syntax",
+        "semantics",
+        "examples",
+        "grammar",
+        "references",
+        "prior-discussion"
+      ],
+      "vscode": true,
+      "build": "gulp",
+      "githubWorkflowCI": true,
+      "githubWorkflowPR": true
+    }
+  }
+}
