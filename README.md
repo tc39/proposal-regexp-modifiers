@@ -6,7 +6,7 @@
 <!--#region:status-->
 ## Status
 
-**Stage:** 0  
+**Stage:** 1  
 **Champion:** Ron Buckton ([@rbuckton](https://github.com/rbuckton))  
 
 _For detailed status of this proposal see [TODO](#todo), below._  
@@ -60,12 +60,14 @@ control a subset of regular expression flags such as:
 - `i` &mdash; Ignore Case
 - `m` &mdash; Multiline
 - `s` &mdash; Single-line (a.k.a. "dot all")
-- `u` &mdash; Unicode
 - `x` &mdash; Extended mode (see https://github.com/rbuckton/proposal-regexp-x-mode)
 
 Modifiers are especially helpful when defining regular expressions in a context
 where executable code cannot be evaluated, such as a JSON configuration
 file or TextMate tmLanguage grammar file.
+
+As part of this proposal, we will investigate each existing (and future-proposed) RegExp flag
+to determine whether they are feasible to used as modifiers.
 
 <!--#endregion:motivations-->
 
@@ -89,10 +91,12 @@ See https://rbuckton.github.io/regexp-features/features/modifiers.html for addit
 
 Modifiers allow you to change the currently active RegExp flags within a subexpression.
 
-- `(?imnsux-imnsux)` &mdash; Sets or unsets (using `-`) the specified RegExp flags starting at the current position until the next closing `)` or the end of the pattern.
-- `(?imnsux-imnsux:subexpression)` &mdash; Sets or unsets (using `-`) the specified RegExp flags for the subexpression.
+- `(?imsx-imsx)` &mdash; Sets or unsets (using `-`) the specified RegExp flags starting at the current position until the next closing `)` or the end of the pattern.
+- `(?imsx-imsx:subexpression)` &mdash; Sets or unsets (using `-`) the specified RegExp flags for the subexpression.
 
 > NOTE: Certain flags cannot be modified mid-expression. These currently include `g` (global), `y` (sticky), and `d` (hasIndices).
+
+> NOTE: The actual supported flags will be determined on a case-by-case basis.
 
 > NOTE: This has no conflicts with existing syntax, as ECMAScript currently produces an error for this syntax in both `u` and non-`u` modes.
 
