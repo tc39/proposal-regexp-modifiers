@@ -1,19 +1,15 @@
-<!--
-TODO: static semantics, syntax error for `(?ims-ims)Quantifier`
--->
 <!doctype html>
 <meta charset="utf8">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
 <link rel="spec" href="es2015" />
 <pre class="metadata">
 title: Regular Expression Pattern Modifiers for ECMAScript
-stage: 0
+stage: 2
 contributors: Ron Buckton, Ecma International
 </pre>
 
 <emu-intro id="sec-intro">
   <h1>Introduction</h1>
-  <p>Forthcoming</p>
   <p>See <a href="https://github.com/rbuckton/proposal-regexp-modifiers#readme">the proposal repository</a> for background material and discussion.</p>
 </emu-intro>
 
@@ -47,9 +43,6 @@ contributors: Ron Buckton, Ecma International
           Assertion[?UnicodeMode, ?N]
           Atom[?UnicodeMode, ?N]
           Atom[?UnicodeMode, ?N] Quantifier
-          <ins>`(` `?` RegularExpressionFlags `)`</ins>
-          <ins>`(` `?` RegularExpressionFlags `-` RegularExpressionFlags `)`</ins>
-          <ins>`(` `?` `-` RegularExpressionFlags `)`</ins>
 
         Assertion[UnicodeMode, N] ::
           `^`
@@ -291,9 +284,6 @@ contributors: Ron Buckton, Ecma International
           <li>
             A <em>Matcher</em> is an Abstract Closure that takes two arguments&mdash;a State and a Continuation&mdash;and returns a MatchResult result. A Matcher attempts to match a middle subpattern (specified by the closure's captured values) of the pattern against _Input_, starting at the intermediate state given by its State argument. The Continuation argument should be a closure that matches the rest of the pattern. After matching the subpattern of a pattern to obtain a new State, the Matcher then calls Continuation on that new State to test if the rest of the pattern can match as well. If it can, the Matcher returns the State returned by Continuation; if not, the Matcher may try different choices at its choice points, repeatedly calling Continuation until it either succeeds or all possibilities have been exhausted.
           </li>
-          <li>
-            <ins>A <em>ModifiedMatcher</em> is an ordered pair (_matcher_, _modifiers_) where _matcher_ is a Matcher and _modifiers_ is a Modifiers. A ModifiedMatcher is used to return both a Matcher and any Modifiers that affect subpatterns to the right of the current subpattern.
-          </li>
         </ul>
       </emu-clause>
 
@@ -307,7 +297,6 @@ contributors: Ron Buckton, Ecma International
         <emu-alg>
           1. <ins>Let _modifiers_ be the Modifiers(_DotAll_, _IgnoreCase_, _Multiline_).</ins>
           1. Let _m_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> ~forward~<ins> and _modifiers_</ins>.
-          1. <ins>Set _m_ to GetMatcher(_m_).</ins>
           1. Return a new Abstract Closure with parameters (_str_, _index_) that captures _m_ and performs the following steps when called:
             1. Assert: Type(_str_) is String.
             1. Assert: _index_ is a non-negative integer which is &le; the length of _str_.
@@ -335,7 +324,7 @@ contributors: Ron Buckton, Ecma International
         </h1>
         <dl class="header">
           <dt>description</dt>
-          <dd>It returns a Matcher<ins> or a ModifiedMatcher</ins>.</dd>
+          <dd>It returns a Matcher.</dd>
         </dl>
         <emu-note>
           <p>This section is amended in B.1.2.4.</p>
@@ -345,18 +334,13 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Disjunction :: Alternative `|` Disjunction</emu-grammar>
         <emu-alg>
           1. Let _m1_ be CompileSubpattern of |Alternative| with argument<ins>s</ins> _direction_<ins> and _modifiers_</ins>.
-          1. <ins>Set _modifiers_ to GetModifiers(_m1_).</ins>
-          1. <ins>Set _m1_ to GetMatcher(_m1_).</ins>
           1. Let _m2_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> _direction_<ins> and _modifiers_</ins>.
-          1. <ins>Set _modifiers_ to GetModifiers(_m2_).</ins>
-          1. <ins>Set _m2_ to GetMatcher(_m2_).</ins>
-          1. <del>Return</del><ins>Let _m_ be</ins> a new Matcher with parameters (_x_, _c_) that captures _m1_ and _m2_ and performs the following steps when called:
+          1. Return a new Matcher with parameters (_x_, _c_) that captures _m1_ and _m2_ and performs the following steps when called:
             1. Assert: _x_ is a State.
             1. Assert: _c_ is a Continuation.
             1. Let _r_ be _m1_(_x_, _c_).
             1. If _r_ is not ~failure~, return _r_.
             1. Return _m2_(_x_, _c_).
-          1. <ins>Return the ModifiedMatcher (_m_, _modifiers_).</ins>
         </emu-alg>
         <emu-note>
           <p>The `|` regular expression operator separates two alternatives. The pattern first tries to match the left |Alternative| (followed by the sequel of the regular expression); if it fails, it tries to match the right |Disjunction| (followed by the sequel of the regular expression). If the left |Alternative|, the right |Disjunction|, and the sequel all have choice points, all choices in the sequel are tried before moving on to the next choice in the left |Alternative|. If choices in the left |Alternative| are exhausted, the right |Disjunction| is tried instead of the left |Alternative|. Any capturing parentheses inside a portion of the pattern skipped by `|` produce *undefined* values instead of Strings. Thus, for example,</p>
@@ -381,13 +365,9 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Alternative :: Alternative Term</emu-grammar>
         <emu-alg>
           1. Let _m1_ be CompileSubpattern of |Alternative| with argument<ins>s</ins> _direction_<ins> and _modifiers_</ins>.
-          1. <ins>Set _modifiers_ to GetModifiers(_m1_).</ins>
-          1. <ins>Set _m1_ to GetMatcher(_m1_).</ins>
           1. Let _m2_ be CompileSubpattern of |Term| with argument<ins>s</ins> _direction_<ins> and _modifiers_</ins>.
-          1. <ins>Set _modifiers_ to GetModifiers(_m2_).</ins>
-          1. <ins>Set _m2_ to GetMatcher(_m2_).</ins>
           1. If _direction_ is ~forward~, then
-            1. <del>Return</del><ins>Let _m_ be</ins> a new Matcher with parameters (_x_, _c_) that captures _m1_ and _m2_ and performs the following steps when called:
+            1. Let _m_ be a new Matcher with parameters (_x_, _c_) that captures _m1_ and _m2_ and performs the following steps when called:
               1. Assert: _x_ is a State.
               1. Assert: _c_ is a Continuation.
               1. Let _d_ be a new Continuation with parameters (_y_) that captures _c_ and _m2_ and performs the following steps when called:
@@ -396,14 +376,13 @@ contributors: Ron Buckton, Ecma International
               1. Return _m1_(_x_, _d_).
           1. Else,
             1. Assert: _direction_ is ~backward~.
-            1. <del>Return</del><ins>Let _m_ be</ins> a new Matcher with parameters (_x_, _c_) that captures _m1_ and _m2_ and performs the following steps when called:
+            1. Let _m_ be a new Matcher with parameters (_x_, _c_) that captures _m1_ and _m2_ and performs the following steps when called:
               1. Assert: _x_ is a State.
               1. Assert: _c_ is a Continuation.
               1. Let _d_ be a new Continuation with parameters (_y_) that captures _c_ and _m1_ and performs the following steps when called:
                 1. Assert: _y_ is a State.
                 1. Return _m1_(_y_, _c_).
               1. Return _m2_(_x_, _d_).
-          1. <ins>Return the ModifiedMatcher (_m_, _modifiers_).</ins>
         </emu-alg>
         <emu-note>
           <p>Consecutive |Term|s try to simultaneously match consecutive portions of _Input_. When _direction_ is ~forward~, if the left |Alternative|, the right |Term|, and the sequel of the regular expression all have choice points, all choices in the sequel are tried before moving on to the next choice in the right |Term|, and all choices in the right |Term| are tried before moving on to the next choice in the left |Alternative|. When _direction_ is ~backward~, the evaluation order of |Alternative| and |Term| are reversed.</p>
@@ -433,120 +412,6 @@ contributors: Ron Buckton, Ecma International
             1. Assert: _c_ is a Continuation.
             1. Return ! RepeatMatcher(_m_, _q_.[[Min]], _q_.[[Max]], _q_.[[Greedy]], _x_, _c_, _parenIndex_, _parenCount_).
         </emu-alg>
-
-        <ins class="block">
-        <emu-grammar>Term :: `(` `?` `-` RegularExpressionFlags `)`</emu-grammar>
-        <emu-alg>
-          1. Let _add_ be the empty String.
-          1. Let _remove_ be the SV of |RegularExpressionFlags|.
-          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
-          1. Let _m_ be a new Matcher with parameters (_x_, _c_) that captures nothing and performs the following steps when called:
-            1. Assert: _x_ is a State.
-            1. Assert: _c_ is a Continuation.
-            1. Return _c_(_x_).
-          1. Return the ModifiedMatcher (_m_, _modifiers_).
-        </emu-alg>
-        <emu-grammar>Term :: `(` `?` RegularExpressionFlags `)`</emu-grammar>
-        <emu-alg>
-          1. Let _add_ be the SV of |RegularExpressionFlags|.
-          1. Let _remove_ be the empty String.
-          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
-          1. Let _m_ be a new Matcher with parameters (_x_, _c_) that captures nothing and performs the following steps when called:
-            1. Assert: _x_ is a State.
-            1. Assert: _c_ is a Continuation.
-            1. Return _c_(_x_).
-          1. Return the ModifiedMatcher (_m_, _modifiers_).
-        </emu-alg>
-        <emu-grammar>Term :: `(` `?` RegularExpressionFlags `-` RegularExpressionFlags `)`</emu-grammar>
-        <emu-alg>
-          1. Let _add_ be the SV of the first |RegularExpressionFlags|.
-          1. Let _remove_ be the SV of the second |RegularExpressionFlags|.
-          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
-          1. Let _m_ be a new Matcher with parameters (_x_, _c_) that captures nothing and performs the following steps when called:
-            1. Assert: _x_ is a State.
-            1. Assert: _c_ is a Continuation.
-            1. Return _c_(_x_).
-          1. Return the ModifiedMatcher (_m_, _modifiers_).
-        </emu-alg>
-        </ins>
-
-        <emu-clause id="sec-runtime-semantics-repeatmatcher-abstract-operation" type="abstract operation">
-          <h1>
-            RepeatMatcher (
-              _m_: a Matcher,
-              _min_: a non-negative integer,
-              _max_: a non-negative integer or +&infin;,
-              _greedy_: a Boolean,
-              _x_: a State,
-              _c_: a Continuation,
-              _parenIndex_: a non-negative integer,
-              _parenCount_: a non-negative integer,
-            )
-          </h1>
-          <dl class="header">
-          </dl>
-          <emu-alg>
-            1. If _max_ = 0, return _c_(_x_).
-            1. Let _d_ be a new Continuation with parameters (_y_) that captures _m_, _min_, _max_, _greedy_, _x_, _c_, _parenIndex_, and _parenCount_ and performs the following steps when called:
-              1. Assert: _y_ is a State.
-              1. [id="step-repeatmatcher-done"] If _min_ = 0 and _y_'s _endIndex_ = _x_'s _endIndex_, return ~failure~.
-              1. If _min_ = 0, let _min2_ be 0; otherwise let _min2_ be _min_ - 1.
-              1. If _max_ is +&infin;, let _max2_ be +&infin;; otherwise let _max2_ be _max_ - 1.
-              1. Return ! RepeatMatcher(_m_, _min2_, _max2_, _greedy_, _y_, _c_, _parenIndex_, _parenCount_).
-            1. Let _cap_ be a copy of _x_'s _captures_ List.
-            1. [id="step-repeatmatcher-clear-captures"] For each integer _k_ such that _parenIndex_ &lt; _k_ and _k_ &le; _parenIndex_ + _parenCount_, set _cap_[_k_] to *undefined*.
-            1. Let _e_ be _x_'s _endIndex_.
-            1. Let _xr_ be the State (_e_, _cap_).
-            1. If _min_ &ne; 0, return _m_(_xr_, _d_).
-            1. If _greedy_ is *false*, then
-              1. Let _z_ be _c_(_x_).
-              1. If _z_ is not ~failure~, return _z_.
-              1. Return _m_(_xr_, _d_).
-            1. Let _z_ be _m_(_xr_, _d_).
-            1. If _z_ is not ~failure~, return _z_.
-            1. Return _c_(_x_).
-          </emu-alg>
-          <emu-note>
-            <p>An |Atom| followed by a |Quantifier| is repeated the number of times specified by the |Quantifier|. A |Quantifier| can be non-greedy, in which case the |Atom| pattern is repeated as few times as possible while still matching the sequel, or it can be greedy, in which case the |Atom| pattern is repeated as many times as possible while still matching the sequel. The |Atom| pattern is repeated rather than the input character sequence that it matches, so different repetitions of the |Atom| can match different input substrings.</p>
-          </emu-note>
-          <emu-note>
-            <p>If the |Atom| and the sequel of the regular expression all have choice points, the |Atom| is first matched as many (or as few, if non-greedy) times as possible. All choices in the sequel are tried before moving on to the next choice in the last repetition of |Atom|. All choices in the last (n<sup>th</sup>) repetition of |Atom| are tried before moving on to the next choice in the next-to-last (n - 1)<sup>st</sup> repetition of |Atom|; at which point it may turn out that more or fewer repetitions of |Atom| are now possible; these are exhausted (again, starting with either as few or as many as possible) before moving on to the next choice in the (n - 1)<sup>st</sup> repetition of |Atom| and so on.</p>
-            <p>Compare</p>
-            <pre><code class="javascript">/a[a-z]{2,4}/.exec("abcdefghi")</code></pre>
-            <p>which returns *"abcde"* with</p>
-            <pre><code class="javascript">/a[a-z]{2,4}?/.exec("abcdefghi")</code></pre>
-            <p>which returns *"abc"*.</p>
-            <p>Consider also</p>
-            <pre><code class="javascript">/(aa|aabaac|ba|b|c)*/.exec("aabaac")</code></pre>
-            <p>which, by the choice point ordering above, returns the array</p>
-            <pre><code class="javascript">["aaba", "ba"]</code></pre>
-            <p>and not any of:</p>
-            <pre><code class="javascript">
-              ["aabaac", "aabaac"]
-              ["aabaac", "c"]
-            </code></pre>
-            <p>The above ordering of choice points can be used to write a regular expression that calculates the greatest common divisor of two numbers (represented in unary notation). The following example calculates the gcd of 10 and 15:</p>
-            <pre><code class="javascript">"aaaaaaaaaa,aaaaaaaaaaaaaaa".replace(/^(a+)\1*,\1+$/, "$1")</code></pre>
-            <p>which returns the gcd in unary notation *"aaaaa"*.</p>
-          </emu-note>
-          <emu-note>
-            <p>Step <emu-xref href="#step-repeatmatcher-clear-captures"></emu-xref> of the RepeatMatcher clears |Atom|'s captures each time |Atom| is repeated. We can see its behaviour in the regular expression</p>
-            <pre><code class="javascript">/(z)((a+)?(b+)?(c))*/.exec("zaacbbbcac")</code></pre>
-            <p>which returns the array</p>
-            <pre><code class="javascript">["zaacbbbcac", "z", "ac", "a", undefined, "c"]</code></pre>
-            <p>and not</p>
-            <pre><code class="javascript">["zaacbbbcac", "z", "ac", "a", "bbb", "c"]</code></pre>
-            <p>because each iteration of the outermost `*` clears all captured Strings contained in the quantified |Atom|, which in this case includes capture Strings numbered 2, 3, 4, and 5.</p>
-          </emu-note>
-          <emu-note>
-            <p>Step <emu-xref href="#step-repeatmatcher-done"></emu-xref> of the RepeatMatcher states that once the minimum number of repetitions has been satisfied, any more expansions of |Atom| that match the empty character sequence are not considered for further repetitions. This prevents the regular expression engine from falling into an infinite loop on patterns such as:</p>
-            <pre><code class="javascript">/(a*)*/.exec("b")</code></pre>
-            <p>or the slightly more complicated:</p>
-            <pre><code class="javascript">/(a*)b\1+/.exec("baaaac")</code></pre>
-            <p>which returns the array</p>
-            <pre><code class="javascript">["b", ""]</code></pre>
-          </emu-note>
-        </emu-clause>
       </emu-clause>
 
       <emu-clause id="sec-compileassertion" type="sdo" oldids="sec-assertion">
@@ -610,7 +475,6 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Assertion :: `(` `?` `=` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _m_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> ~forward~<ins> and _modifiers_</ins>.
-          1. <ins>Set _m_ to GetMatcher(_m_).</ins>
           1. Return a new Matcher with parameters (_x_, _c_) that captures _m_ and performs the following steps when called:
             1. Assert: _x_ is a State.
             1. Assert: _c_ is a Continuation.
@@ -628,7 +492,6 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Assertion :: `(` `?` `!` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _m_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> ~forward~<ins> and _modifiers_</ins>.
-          1. <ins>Set _m_ to GetMatcher(_m_).</ins>
           1. Return a new Matcher with parameters (_x_, _c_) that captures _m_ and performs the following steps when called:
             1. Assert: _x_ is a State.
             1. Assert: _c_ is a Continuation.
@@ -642,7 +505,6 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Assertion :: `(` `?` `&lt;=` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _m_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> ~backward~<ins> and _modifiers_</ins>.
-          1. <ins>Set _m_ to GetMatcher(_m_).</ins>
           1. Return a new Matcher with parameters (_x_, _c_) that captures _m_ and performs the following steps when called:
             1. Assert: _x_ is a State.
             1. Assert: _c_ is a Continuation.
@@ -660,7 +522,6 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Assertion :: `(` `?` `&lt;!` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _m_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> ~backward~<ins> and _modifiers_</ins>.
-          1. <ins>Set _m_ to GetMatcher(_m_).</ins>
           1. Return a new Matcher with parameters (_x_, _c_) that captures _m_ and performs the following steps when called:
             1. Assert: _x_ is a State.
             1. Assert: _c_ is a Continuation.
@@ -805,33 +666,30 @@ contributors: Ron Buckton, Ecma International
         </emu-alg>
         <emu-grammar>Atom :: `(` `?` `:` Disjunction `)`</emu-grammar>
         <emu-alg>
-          1. <del>Return</del><ins>Let _m_ be</ins> CompileSubpattern of |Disjunction| with argument<ins>s</ins> _direction_<ins> and _modifiers_</ins>.
-          1. <ins>Return GetMatcher(_m_).</ins>
+          1. Return CompileSubpattern of |Disjunction| with argument<ins>s</ins> _direction_<ins> and _modifiers_</ins>.
         </emu-alg>
+
         <ins class="block">
         <emu-grammar>Atom :: `(` `?` `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _add_ be the empty String.
           1. Let _remove_ be the SV of |RegularExpressionFlags|.
           1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
-          1. Let _m_ be CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
-          1. Return GetMatcher(_m_).
+          1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _add_ be the SV of |RegularExpressionFlags|.
           1. Let _remove_ be the empty String.
           1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
-          1. Let _m_ be CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
-          1. Return GetMatcher(_m_).
+          1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _add_ be the SV of the first |RegularExpressionFlags|.
           1. Let _remove_ be the SV of the second |RegularExpressionFlags|.
           1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
-          1. Let _m_ be CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
-          1. Return GetMatcher(_m_).
+          1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
         </ins>
 
@@ -1216,7 +1074,7 @@ contributors: Ron Buckton, Ecma International
         <dl class="header">
         </dl>
         <emu-alg>
-          1. Let _wordCharacters_ be the mathematical set that is the union of all sixty-three characters in *"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"* (letters, numbers, and U+005F (LOW LINE) in the Unicode Basic Latin block) and all characters _c_<ins> and current Modifiers _modifiers_</ins> for which _c_ is not in that set but Canonicalize(_c_, _modifiers_) is. _wordCharacters_ cannot contain more than sixty-three characters unless _Unicode_ and _modifiers_'s _ignoreCase_ are both *true*.
+          1. Let _wordCharacters_ be the mathematical set that is the union of all sixty-three characters in *"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"* (letters, numbers, and U+005F (LOW LINE) in the Unicode Basic Latin block) and all characters _c_ for which _c_ is not in that set but Canonicalize(_c_, _modifiers_) is. _wordCharacters_ cannot contain more than sixty-three characters unless _Unicode_ and _modifiers_'s _ignoreCase_ are both *true*.
           1. Return _wordCharacters_.
         </emu-alg>
       </emu-clause>
@@ -1244,41 +1102,6 @@ contributors: Ron Buckton, Ecma International
           1. If _remove_ contains *"i"*, set _ignoreCase_ to *false*.
           1. If _remove_ contains *"m"*, set _multiline_ to *false*.
           1. Return the Modifiers(_dotAll_, _ignoreCase_, _multiline_).
-        </emu-alg>
-      </emu-clause>
-
-      <emu-clause id="sec-getmatcher" type="abstract operation">
-        <h1>
-          <ins>
-          GetMatcher (
-            _input_: a Matcher or a ModifiedMatcher,
-          )
-          </ins>
-        </h1>
-        <dl class="header">
-        </dl>
-        <emu-alg>
-          1. If _input_ is a Matcher, return _input_.
-          1. Assert: _input_ is a ModifiedMatcher.
-          1. Return _input_'s _matcher_.
-        </emu-alg>
-      </emu-clause>
-
-      <emu-clause id="sec-getmodifiers" type="abstract operation">
-        <h1>
-          <ins>
-          GetModifiers (
-            _input_: a Matcher or a ModifiedMatcher,
-            _modifiers_ a Modifiers,
-          )
-          </ins>
-        </h1>
-        <dl class="header">
-        </dl>
-        <emu-alg>
-          1. If _input_ is a Matcher, return _modifiers_.
-          1. Assert: _input_ is a ModifiedMatcher.
-          1. Return _input_'s _modifiers_.
         </emu-alg>
       </emu-clause>
       </ins>
@@ -1331,9 +1154,6 @@ contributors: Ron Buckton, Ecma International
           `(` `?` `:` Disjunction[~UnicodeMode, ?N] `)`
           InvalidBracedQuantifier
           ExtendedPatternCharacter
-          <ins>`(` `?` `-` RegularExpressionFlags `)`</ins>
-          <ins>`(` `?` RegularExpressionFlags `)`</ins>
-          <ins>`(` `?` RegularExpressionFlags `-` RegularExpressionFlags `)`</ins>
           <ins>`(` `?` `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>

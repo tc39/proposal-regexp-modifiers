@@ -6,7 +6,7 @@
 <!--#region:status-->
 ## Status
 
-**Stage:** 1  
+**Stage:** 2  
 **Champion:** Ron Buckton ([@rbuckton](https://github.com/rbuckton))  
 
 _For detailed status of this proposal see [TODO](#todo), below._  
@@ -59,14 +59,18 @@ See https://rbuckton.github.io/regexp-features/features/modifiers.html for addit
 
 Modifiers allow you to change the currently active RegExp flags within a subexpression.
 
-- `(?imsx-imsx)` &mdash; Sets or unsets (using `-`) the specified RegExp flags starting at the current position until the next closing `)` or the end of the pattern.
 - `(?imsx-imsx:subexpression)` &mdash; Sets or unsets (using `-`) the specified RegExp flags for the subexpression.
+- ~~`(?imsx-imsx)` &mdash; Sets or unsets (using `-`) the specified RegExp flags starting at the current position until the next closing `)` or the end of the pattern.~~
 
-> NOTE: Certain flags cannot be modified mid-expression. These currently include `g` (global), `y` (sticky), and `d` (hasIndices).
+> NOTE: Certain flags cannot be modified mid-expression. These currently include `g` (global), `y` (sticky), `u` (unicode), and `d` (hasIndices).
 
-> NOTE: The actual supported flags will be determined on a case-by-case basis.
+> NOTE: The actual supported flags will be determined on a case-by-case basis. See [#1](https://github.com/tc39/proposal-regexp-modifiers/issues/1).
 
 > NOTE: This has no conflicts with existing syntax, as ECMAScript currently produces an error for this syntax in both `u` and non-`u` modes.
+
+> NOTE: The "self-bounded" form (`(?imsx-imsx:subexpression)`) advanced to Stage 2 on December 15th, 2021.
+
+> NOTE: The "unbounded" form (`(?imsx-imsx)`) is no longer being considered as part of this proposal as of December 15th, 2021.
 
 <!--#endregion:syntax-->
 
@@ -80,12 +84,12 @@ Modifiers allow you to change the currently active RegExp flags within a subexpr
 # Examples
 
 ```js
-const re1 = /^(?i)[a-z](?-i)[a-z]$/;
+const re1 = /^[a-z](?-i:[a-z])$/i;
 re1.test("ab"); // true
 re1.test("Ab"); // true
 re1.test("aB"); // false
 
-const re2 = /^(?i:[a-z](?-i:[a-z]))$/;
+const re2 = /^(?i:[a-z])[a-z]$/;
 re2.test("ab"); // true
 re2.test("Ab"); // true
 re2.test("aB"); // false
@@ -120,6 +124,9 @@ re2.test("aB"); // false
 
 - October 27th, 2021 &mdash; Proposed for Stage 1 ([slides](https://1drv.ms/p/s!AjgWTO11Fk-Tkfl7c6yR-2P8T4gn0w?e=cvaUL2))
   - Outcome: Advanced to Stage 1
+- December 15th, 2021 &mdash; Proposed for Stage 2 ([slides](https://1drv.ms/p/s!AjgWTO11Fk-Tkfs3yIyrh3hZ2k6PCQ?e=Yodx4H))
+  - Outcome: Advanced to Stage 2 with "self-bounded" form only ("unbounded" form did not advance).
+  - Stage 2 Reviewers: Richard Gibson, Waldemar Horwat
 
 <!--#region:todo-->
 # TODO
