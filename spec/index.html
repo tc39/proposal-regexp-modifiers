@@ -10,7 +10,7 @@ contributors: Ron Buckton, Ecma International
 
 <emu-intro id="sec-intro">
   <h1>Introduction</h1>
-  <p>See <a href="https://github.com/rbuckton/proposal-regexp-modifiers#readme">the proposal repository</a> for background material and discussion.</p>
+  <p>See <a href="https://github.com/tc39/proposal-regexp-modifiers#readme">the proposal repository</a> for background material and discussion.</p>
 </emu-intro>
 
 <emu-clause id="sec-text-processing">
@@ -287,6 +287,25 @@ contributors: Ron Buckton, Ecma International
         </ul>
       </emu-clause>
 
+      <ins class="block">
+      <emu-clause id="sec-patterns-static-semantics-early-errors">
+        <h1>Static Semantics: Early Errors</h1>
+        <emu-grammar>
+          Atom ::
+            `(` `?` `-` RegularExpressionFlags `:` Disjunction `)`
+            `(` `?` RegularExpressionFlags `:` Disjunction `)`
+        </emu-grammar>
+        <ul>
+          <li>It is a Syntax Error if the source text that was recognized as |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
+        </ul>
+        <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
+        <ul>
+          <li>It is a Syntax Error if the source text that was recognized as the first |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
+          <li>It is a Syntax Error if the source text that was recognized as the second |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
+        </ul>
+      </emu-clause>
+      </ins>
+
       <emu-clause id="sec-compilepattern" type="sdo" oldids="sec-pattern">
         <h1>Runtime Semantics: CompilePattern</h1>
         <dl class="header">
@@ -295,7 +314,7 @@ contributors: Ron Buckton, Ecma International
         </dl>
         <emu-grammar>Pattern :: Disjunction</emu-grammar>
         <emu-alg>
-          1. <ins>Let _modifiers_ be the Modifiers(_DotAll_, _IgnoreCase_, _Multiline_).</ins>
+          1. <ins>Let _modifiers_ be the Modifiers (_DotAll_, _IgnoreCase_, _Multiline_).</ins>
           1. Let _m_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> ~forward~<ins> and _modifiers_</ins>.
           1. Return a new Abstract Closure with parameters (_str_, _index_) that captures _m_ and performs the following steps when called:
             1. Assert: Type(_str_) is String.
@@ -673,21 +692,21 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Atom :: `(` `?` `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _add_ be the empty String.
-          1. Let _remove_ be the SV of |RegularExpressionFlags|.
+          1. Let _remove_ be the source text that was recognized as |RegularExpressionFlags|.
           1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
           1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
-          1. Let _add_ be the SV of |RegularExpressionFlags|.
+          1. Let _add_ be the source text that was recognized as |RegularExpressionFlags|.
           1. Let _remove_ be the empty String.
           1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
           1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
-          1. Let _add_ be the SV of the first |RegularExpressionFlags|.
-          1. Let _remove_ be the SV of the second |RegularExpressionFlags|.
+          1. Let _add_ be the source text that was recognized as the first |RegularExpressionFlags|.
+          1. Let _remove_ be the source text that was recognized as the second |RegularExpressionFlags|.
           1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
           1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
