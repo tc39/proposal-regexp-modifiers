@@ -74,7 +74,7 @@ contributors: Ron Buckton, Ecma International
           `\` AtomEscape[?UnicodeMode, ?N]
           CharacterClass[?UnicodeMode]
           `(` GroupSpecifier[?UnicodeMode] Disjunction[?UnicodeMode, ?N] `)`
-          `(` `?` `:` Disjunction[?UnicodeMode, ?N] `)`
+          <del>`(` `?` `:` Disjunction[?UnicodeMode, ?N] `)`</del>
           <ins>`(` `?` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
@@ -625,10 +625,13 @@ contributors: Ron Buckton, Ecma International
               1. Return _c_(_z_).
             1. Return _m_(_x_, _d_).
         </emu-alg>
+
+        <del class="block">
         <emu-grammar>Atom :: `(` `?` `:` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Return CompileSubpattern of |Disjunction| with argument<ins>s</ins> _direction_<ins> and _modifiers_</ins>.
         </emu-alg>
+        </del>
 
         <ins class="block">
         <emu-grammar>Atom :: `(` `?` `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
