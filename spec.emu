@@ -77,7 +77,6 @@ contributors: Ron Buckton, Ecma International
           <del>`(` `?` `:` Disjunction[?UnicodeMode, ?N] `)`</del>
           <ins>`(` `?` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
-          <ins>`(` `?` `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
 
         SyntaxCharacter :: one of
           `^` `$` `\` `.` `*` `+` `?` `(` `)` `[` `]` `{` `}` `|`
@@ -292,11 +291,7 @@ contributors: Ron Buckton, Ecma International
       <ins class="block">
       <emu-clause id="sec-patterns-static-semantics-early-errors">
         <h1>Static Semantics: Early Errors</h1>
-        <emu-grammar>
-          Atom ::
-            `(` `?` `-` RegularExpressionFlags `:` Disjunction `)`
-            `(` `?` RegularExpressionFlags `:` Disjunction `)`
-        </emu-grammar>
+        <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <ul>
           <li>It is a Syntax Error if the source text that was recognized as |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
         </ul>
@@ -634,13 +629,6 @@ contributors: Ron Buckton, Ecma International
         </del>
 
         <ins class="block">
-        <emu-grammar>Atom :: `(` `?` `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
-        <emu-alg>
-          1. Let _add_ be the empty String.
-          1. Let _remove_ be the source text that was recognized as |RegularExpressionFlags|.
-          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
-          1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
-        </emu-alg>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
           1. Let _add_ be the source text that was recognized as |RegularExpressionFlags|.
@@ -1026,7 +1014,6 @@ contributors: Ron Buckton, Ecma International
           CharacterClass[~UnicodeMode]
           `(` Disjunction[~UnicodeMode, ?N] `)`
           <del>`(` `?` `:` Disjunction[~UnicodeMode, ?N] `)`</del>
-          <ins>`(` `?` `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           InvalidBracedQuantifier
