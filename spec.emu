@@ -1025,12 +1025,12 @@ contributors: Ron Buckton, Ecma International
           `\` [lookahead == `c`]
           CharacterClass[~UnicodeMode]
           `(` Disjunction[~UnicodeMode, ?N] `)`
-          `(` `?` `:` Disjunction[~UnicodeMode, ?N] `)`
-          InvalidBracedQuantifier
-          ExtendedPatternCharacter
+          <del>`(` `?` `:` Disjunction[~UnicodeMode, ?N] `)`</del>
           <ins>`(` `?` `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
           <ins>`(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction[?UnicodeMode, ?N] `)`</ins>
+          InvalidBracedQuantifier
+          ExtendedPatternCharacter
 
         InvalidBracedQuantifier ::
           `{` DecimalDigits[~Sep] `}`
