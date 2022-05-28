@@ -297,6 +297,7 @@ contributors: Ron Buckton, Ecma International
           <li>It is a Syntax Error if the source text matched by the first |RegularExpressionFlags| and the source text matched by the second |RegularExpressionFlags| are both empty.
           <li>It is a Syntax Error if the source text matched by the first |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or contains the same code point more than once.
           <li>It is a Syntax Error if the source text matched by the second |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or contains the same code point more than once.
+          <li>It is a Syntax Error if the any code point in the source text matched by the first |RegularExpressionFlags| is also contained in the source text matched by the second |RegularExpressionFlags|.
         </ul>
       </emu-clause>
 
