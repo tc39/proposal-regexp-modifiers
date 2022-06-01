@@ -297,6 +297,7 @@ contributors: Ron Buckton, Ecma International
         </ul>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <ul>
+          <li>It is a Syntax Error if the source texts that were recognized as the first and second |RegularExpressionFlags| are both the empty string.
           <li>It is a Syntax Error if the source text that was recognized as the first |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
           <li>It is a Syntax Error if the source text that was recognized as the second |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
         </ul>
