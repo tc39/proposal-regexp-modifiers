@@ -271,9 +271,6 @@ contributors: Ron Buckton, Ecma International
             A <em>CharSet</em> is a mathematical set of characters. When the _Unicode_ flag is *true*, &ldquo;all characters&rdquo; means the CharSet containing all code point values; otherwise &ldquo;all characters&rdquo; means the CharSet containing all code unit values.
           </li>
           <li>
-            <ins>A <em>Modifiers</em> is an ordered triple (_dotAll_, _ignoreCase_, _multiline_) representing the current state of _DotAll_, _IgnoreCase_, and _Multiline_.</ins>
-          </li>
-          <li>
             A <em>State</em> is an ordered pair (_endIndex_, _captures_) where _endIndex_ is an integer and _captures_ is a List of _NcapturingParens_ values. States are used to represent partial match states in the regular expression matching algorithms. The _endIndex_ is one plus the index of the last input character matched so far by the pattern, while _captures_ holds the results of capturing parentheses. The _n_<sup>th</sup> element of _captures_ is either a List of characters that represents the value obtained by the _n_<sup>th</sup> set of capturing parentheses or *undefined* if the _n_<sup>th</sup> set of capturing parentheses hasn't been reached yet. Due to backtracking, many States may be in use at any time during the matching process.
           </li>
           <li>
@@ -293,14 +290,44 @@ contributors: Ron Buckton, Ecma International
         <h1>Static Semantics: Early Errors</h1>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <ul>
-          <li>It is a Syntax Error if the source text that was recognized as |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
+          <li>It is a Syntax Error if the source text matched by |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
         </ul>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <ul>
-          <li>It is a Syntax Error if the source texts that were recognized as the first and second |RegularExpressionFlags| are both the empty string.
-          <li>It is a Syntax Error if the source text that was recognized as the first |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
-          <li>It is a Syntax Error if the source text that was recognized as the second |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or if it contains the same code point more than once.
+          <li>It is a Syntax Error if the source text matched by the first |RegularExpressionFlags| and the source text matched by the second |RegularExpressionFlags| are both empty.
+          <li>It is a Syntax Error if the source text matched by either |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`.
+          <li>It is a Syntax Error if the source text matched by either |RegularExpressionFlags| contains the same code point more than once.
         </ul>
+      </emu-clause>
+
+      <emu-clause id="sec-modifiers-records">
+        <h1>Modifiers Records</h1>
+        <p>A <dfn variants="Modifiers Records">Modifiers Record</dfn> is a Record value used to encapsulate information about the regular expression flags that apply to a subpattern.</p>
+        <p>Modifiers Records have the fields listed in <emu-xref href="#table-modifiers-record"></emu-xref>.</p>
+        <emu-table id="table-modifiers-record" caption="Modifiers Record Fields">
+          <table>
+            <tr>
+              <th>Field Name</th>
+              <th>Value</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>[[DotAll]]</td>
+              <td>a Boolean</td>
+              <td>Indicates whether the *"s"* flag is currently enabled.</td>
+            </tr>
+            <tr>
+              <td>[[IgnoreCase]]</td>
+              <td>a Boolean</td>
+              <td>Indicates whether the *"i"* flag is currently enabled.</td>
+            </tr>
+            <tr>
+              <td>[[Multiline]]</td>
+              <td>a Boolean</td>
+              <td>Indicates whether the *"m"* flag is currently enabled.</td>
+            </tr>
+          </table>
+        </emu-table>
       </emu-clause>
       </ins>
 
@@ -312,7 +339,7 @@ contributors: Ron Buckton, Ecma International
         </dl>
         <emu-grammar>Pattern :: Disjunction</emu-grammar>
         <emu-alg>
-          1. <ins>Let _modifiers_ be the Modifiers (_DotAll_, _IgnoreCase_, _Multiline_).</ins>
+          1. <ins>Let _modifiers_ be the Modifiers Record { [[DotAll]]: _DotAll_, [[IgnoreCase]]: _IgnoreCase_, [[Multiline]]: _Multiline_ }.</ins>
           1. Let _m_ be CompileSubpattern of |Disjunction| with argument<ins>s</ins> ~forward~<ins> and _modifiers_</ins>.
           1. Return a new Abstract Closure with parameters (_str_, _index_) that captures _m_ and performs the following steps when called:
             1. Assert: Type(_str_) is String.
@@ -336,7 +363,7 @@ contributors: Ron Buckton, Ecma International
         <h1>
           Runtime Semantics: CompileSubpattern (
             _direction_: ~forward~ or ~backward~,
-            <ins>_modifiers_: a Modifiers,</ins>
+            <ins>_modifiers_: a Modifiers Record,</ins>
           ): a Matcher
         </h1>
         <dl class="header">
@@ -406,7 +433,7 @@ contributors: Ron Buckton, Ecma International
         <!-- Term -->
         <emu-grammar>Term :: Assertion</emu-grammar>
         <emu-alg>
-          1. Return CompileAssertion of |Assertion|.
+          1. Return CompileAssertion of |Assertion|<ins> with argument _modifiers_</ins>.
         </emu-alg>
         <emu-note>
           <p>The resulting Matcher is independent of _direction_.</p>
@@ -432,7 +459,7 @@ contributors: Ron Buckton, Ecma International
       <emu-clause id="sec-compileassertion" type="sdo" oldids="sec-assertion">
         <h1>
           Runtime Semantics: CompileAssertion (
-            <ins>_modifiers_: a Modifiers,</ins>
+            <ins>_modifiers_: a Modifiers Record,</ins>
           ): a Matcher
         </h1>
         <dl class="header">
@@ -446,12 +473,12 @@ contributors: Ron Buckton, Ecma International
             1. Assert: _x_ is a State.
             1. Assert: _c_ is a Continuation.
             1. Let _e_ be _x_'s _endIndex_.
-            1. If _e_ = 0, or if <del>_Multiline_</del><ins>_modifiers_'s _multiline_</ins> is *true* and the character _Input_[_e_ - 1] is one of |LineTerminator|, then
+            1. If _e_ = 0, or if <del>_Multiline_</del><ins>_modifiers_.[[Multiline]]</ins> is *true* and the character _Input_[_e_ - 1] is one of |LineTerminator|, then
               1. Return _c_(_x_).
             1. Return ~failure~.
         </emu-alg>
         <emu-note>
-          <p>Even when the `y` flag is used with a pattern, `^` always matches only at the beginning of _Input_, or (if <del>_Multiline_</del><ins>_modifiers_'s _multiline_</ins> is *true*) at the beginning of a line.</p>
+          <p>Even when the `y` flag is used with a pattern, `^` always matches only at the beginning of _Input_, or (if <del>_Multiline_</del><ins>_modifiers_.[[Multiline]]</ins> is *true*) at the beginning of a line.</p>
         </emu-note>
         <emu-grammar>Assertion :: `$`</emu-grammar>
         <emu-alg>
@@ -459,7 +486,7 @@ contributors: Ron Buckton, Ecma International
             1. Assert: _x_ is a State.
             1. Assert: _c_ is a Continuation.
             1. Let _e_ be _x_'s _endIndex_.
-            1. If _e_ = _InputLength_, or if <del>_Multiline_</del><ins>_modifiers_'s _multiline_</ins> is *true* and the character _Input_[_e_] is one of |LineTerminator|, then
+            1. If _e_ = _InputLength_, or if <del>_Multiline_</del><ins>_modifiers_.[[Multiline]]</ins> is *true* and the character _Input_[_e_] is one of |LineTerminator|, then
               1. Return _c_(_x_).
             1. Return ~failure~.
         </emu-alg>
@@ -550,7 +577,7 @@ contributors: Ron Buckton, Ecma International
           <h1>
             IsWordChar (
               _e_: an integer,
-              <ins>_modifiers_: a Modifiers,</ins>
+              <ins>_modifiers_: a Modifiers Record,</ins>
             )
           </h1>
           <dl class="header">
@@ -569,7 +596,7 @@ contributors: Ron Buckton, Ecma International
         <h1>
           Runtime Semantics: CompileAtom (
             _direction_: ~forward~ or ~backward~,
-            <ins>_modifiers: a Modifiers,</ins>
+            <ins>_modifiers_: a Modifiers Record,</ins>
           ): a Matcher
         </h1>
         <dl class="header">
@@ -588,7 +615,7 @@ contributors: Ron Buckton, Ecma International
         <emu-grammar>Atom :: `.`</emu-grammar>
         <emu-alg>
           1. Let _A_ be the CharSet of all characters.
-          1. If <del>_DotAll_</del><ins>_modifiers_'s _dotAll_</ins> is not *true*, then
+          1. If <del>_DotAll_</del><ins>_modifiers_.[[DotAll]]</ins> is not *true*, then
             1. Remove from _A_ all characters corresponding to a code point on the right-hand side of the |LineTerminator| production.
           1. Return CharacterSetMatcher(_A_, *false*, _direction_<ins>, _modifiers_</ins>).
         </emu-alg>
@@ -632,16 +659,16 @@ contributors: Ron Buckton, Ecma International
         <ins class="block">
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
-          1. Let _add_ be the source text that was recognized as |RegularExpressionFlags|.
-          1. Let _remove_ be the empty String.
-          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
+          1. Let _addModifiers_ be the source text matched by |RegularExpressionFlags|.
+          1. Let _removeModifiers_ be the empty String.
+          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, CodePointsToString(_addModifiers_), _removeModifiers_).
           1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
         <emu-grammar>Atom :: `(` `?` RegularExpressionFlags `-` RegularExpressionFlags `:` Disjunction `)`</emu-grammar>
         <emu-alg>
-          1. Let _add_ be the source text that was recognized as the first |RegularExpressionFlags|.
-          1. Let _remove_ be the source text that was recognized as the second |RegularExpressionFlags|.
-          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, _add_, _remove_).
+          1. Let _addModifiers_ be the source text matched by the first |RegularExpressionFlags|.
+          1. Let _removeModifiers_ be the source text matched by the second |RegularExpressionFlags|.
+          1. Let _newModifiers_ be UpdateModifiers(_modifiers_, CodePointsToString(_addModifiers_), CodePointsToString(_removeModifiers_)).
           1. Return CompileSubpattern of |Disjunction| with arguments _direction_ and _newModifiers_.
         </emu-alg>
         </ins>
@@ -682,7 +709,7 @@ contributors: Ron Buckton, Ecma International
               _A_: a CharSet,
               _invert_: a Boolean,
               _direction_: ~forward~ or ~backward~,
-              <ins>_modifiers_: a Modifiers,</ins>
+              <ins>_modifiers_: a Modifiers Record,</ins>
             ): a Matcher
           </h1>
           <dl class="header">
@@ -712,7 +739,7 @@ contributors: Ron Buckton, Ecma International
             BackreferenceMatcher (
               _n_: a positive integer,
               _direction_: ~forward~ or ~backward~,
-              <ins>_modifiers_: a Modifiers,</ins>
+              <ins>_modifiers_: a Modifiers Record,</ins>
             ): a Matcher
           </h1>
           <dl class="header">
@@ -741,16 +768,16 @@ contributors: Ron Buckton, Ecma International
           <h1>
             Canonicalize (
               _ch_: a character,
-              <ins>_modifiers_: a Modifiers,</ins>
+              <ins>_modifiers_: a Modifiers Record,</ins>
             ): a Matcher
           </h1>
           <dl class="header">
           </dl>
           <emu-alg>
-            1. If _Unicode_ is *true* and <del>_IgnoreCase_</del><ins>_modifiers_'s _ignoreCase_</ins> is *true*, then
+            1. If _Unicode_ is *true* and <del>_IgnoreCase_</del><ins>_modifiers_.[[IgnoreCase]]</ins> is *true*, then
               1. If the file CaseFolding.txt of the Unicode Character Database provides a simple or common case folding mapping for _ch_, return the result of applying that mapping to _ch_.
               1. Return _ch_.
-            1. If <del>_IgnoreCase_</del><ins>_modifiers_'s _ignoreCase_</ins> is *false*, return _ch_.
+            1. If <del>_IgnoreCase_</del><ins>_modifiers_.[[IgnoreCase]]</ins> is *false*, return _ch_.
             1. Assert: _ch_ is a UTF-16 code unit.
             1. Let _cp_ be the code point whose numeric value is that of _ch_.
             1. Let _u_ be the result of toUppercase(&laquo; _cp_ &raquo;), according to the Unicode Default Case Conversion algorithm.
@@ -930,23 +957,26 @@ contributors: Ron Buckton, Ecma International
         <h1>
           <ins>
           GetWordCharacters (
-            _modifiers_: a Modifiers,
+            _modifiers_: a Modifiers Record,
           ): a CharSet
           </ins>
         </h1>
         <dl class="header">
         </dl>
         <emu-alg>
-          1. Let _wordCharacters_ be the mathematical set that is the union of all sixty-three characters in *"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"* (letters, numbers, and U+005F (LOW LINE) in the Unicode Basic Latin block) and all characters _c_ for which _c_ is not in that set but Canonicalize(_c_, _modifiers_) is. _wordCharacters_ cannot contain more than sixty-three characters unless _Unicode_ and _modifiers_'s _ignoreCase_ are both *true*.
+          1. Let _wordCharacters_ be the mathematical set that is the union of all sixty-three characters in *"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"* (letters, numbers, and U+005F (LOW LINE) in the Unicode Basic Latin block) and all characters _c_ for which _c_ is not in that set but Canonicalize(_c_, _modifiers_) is.
           1. Return _wordCharacters_.
         </emu-alg>
+        <emu-note>
+          _wordCharacters_ cannot contain more than sixty-three characters unless _Unicode_ and _modifiers_.[[IgnoreCase]] are both *true*.
+        </emu-note>
       </emu-clause>
 
       <emu-clause id="sec-updatemodifiers" type="abstract operation">
         <h1>
           <ins>
           UpdateModifiers (
-            _modifiers_: a Modifiers,
+            _modifiers_: a Modifiers Record,
             _add_: a String,
             _remove_: a String,
           ): a Modifiers
@@ -955,16 +985,16 @@ contributors: Ron Buckton, Ecma International
         <dl class="header">
         </dl>
         <emu-alg>
-          1. Let _dotAll_ be _modifiers_'s _dotAll_.
-          1. Let _ignoreCase_ be _modifiers_'s _ignoreCase_.
-          1. Let _multiline_ be _modifiers_'s _multiline_.
+          1. Let _dotAll_ be _modifiers_.[[DotAll]].
+          1. Let _ignoreCase_ be _modifiers_.[[IgnoreCase]].
+          1. Let _multiline_ be _modifiers_.[[Multiline]].
           1. If _add_ contains *"s"*, set _dotAll_ to *true*.
           1. If _add_ contains *"i"*, set _ignoreCase_ to *true*.
           1. If _add_ contains *"m"*, set _multiline_ to *true*.
           1. If _remove_ contains *"s"*, set _dotAll_ to *false*.
           1. If _remove_ contains *"i"*, set _ignoreCase_ to *false*.
           1. If _remove_ contains *"m"*, set _multiline_ to *false*.
-          1. Return the Modifiers(_dotAll_, _ignoreCase_, _multiline_).
+          1. Return the Modifiers Record { [[DotAll]]: _dotAll_, [[IgnoreCase]]: _ignoreCase_, [[Multiline]]: _multiline_ }.
         </emu-alg>
       </emu-clause>
       </ins>
