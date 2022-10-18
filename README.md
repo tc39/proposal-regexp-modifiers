@@ -6,7 +6,7 @@
 <!--#region:status-->
 ## Status
 
-**Stage:** 2  
+**Stage:** 3  
 **Champion:** Ron Buckton ([@rbuckton](https://github.com/rbuckton))  
 
 _For detailed status of this proposal see [TODO](#todo), below._  
@@ -127,6 +127,8 @@ re2.test("aB"); // false
 - December 15th, 2021 &mdash; Proposed for Stage 2 ([slides](https://1drv.ms/p/s!AjgWTO11Fk-Tkfs3yIyrh3hZ2k6PCQ?e=Yodx4H))
   - Outcome: Advanced to Stage 2 with "self-bounded" form only ("unbounded" form did not advance).
   - Stage 2 Reviewers: Richard Gibson, Waldemar Horwat
+- June 7th, 2022 &mdash; Proposed for Stage 3 ([slides](https://1drv.ms/p/s!AjgWTO11Fk-Tkf5daRnRsxu8BY5Nsg?e=UKVf8W))
+  - Outcome: [Advanced to Stage 3](https://github.com/tc39/notes/blob/31edb829db604fdb0255b21238b20898b66cee41/meetings/2022-06/jun-07.md)
 
 <!--#region:todo-->
 # TODO
