@@ -4,7 +4,7 @@
 <link rel="spec" href="es2015" />
 <pre class="metadata">
 title: Regular Expression Pattern Modifiers for ECMAScript
-stage: 2
+stage: 3
 contributors: Ron Buckton, Ecma International
 </pre>
 
@@ -297,7 +297,7 @@ contributors: Ron Buckton, Ecma International
           <li>It is a Syntax Error if the source text matched by the first |RegularExpressionFlags| and the source text matched by the second |RegularExpressionFlags| are both empty.
           <li>It is a Syntax Error if the source text matched by the first |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or contains the same code point more than once.
           <li>It is a Syntax Error if the source text matched by the second |RegularExpressionFlags| contains any code point other than `i`, `m`, or `s`, or contains the same code point more than once.
-          <li>It is a Syntax Error if the any code point in the source text matched by the first |RegularExpressionFlags| is also contained in the source text matched by the second |RegularExpressionFlags|.
+          <li>It is a Syntax Error if any code point in the source text matched by the first |RegularExpressionFlags| is also contained in the source text matched by the second |RegularExpressionFlags|.
         </ul>
       </emu-clause>
 
