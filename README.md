@@ -175,7 +175,7 @@ The following is a high-level list of tasks to progress through each stage of th
 [Transpiler]: #todo
 [Stage3ReviewerSignOff]: #todo
 [Stage3EditorSignOff]: #todo
-[Test262PullRequest]: [#todo](https://github.com/tc39/test262/pull/3960)
+[Test262PullRequest]: https://github.com/tc39/test262/pull/3960
 [Implementation1]: #todo
 [Implementation2]: #todo
-[Ecma262PullRequest]: #todo
+[Ecma262PullRequest]: https://github.com/tc39/ecma262/pull/3221
