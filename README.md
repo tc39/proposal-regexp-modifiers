@@ -159,8 +159,8 @@ The following is a high-level list of tasks to progress through each stage of th
   * [x] written  
   * [ ] merged  
 * [ ] Two compatible implementations which pass the acceptance tests:  
-  * [ ] [V8][Implementation1]  
-  * [ ] SpiderMonkey  
+  * [X] [V8][Implementation1] - Shipping in [Chrome 125](https://developer.chrome.com/release-notes/125)/Edge 125
+  * [ ] [SpiderMonkey][Implementation2] - In Progress
   * [ ] JSC  
   * [ ] [Engine262](https://github.com/engine262/engine262/pull/229)  
 * [x] A [pull request][Ecma262PullRequest] has been sent to tc39/ecma262 with the integrated spec text.  
@@ -185,5 +185,5 @@ The following is a high-level list of tasks to progress through each stage of th
 [Stage3EditorSignOff]: #todo
 [Test262PullRequest]: https://github.com/tc39/test262/pull/3960
 [Implementation1]: https://bugs.chromium.org/p/v8/issues/detail?id=12956
-[Implementation2]: #todo
+[Implementation2]: https://bugzilla.mozilla.org/show_bug.cgi?id=1899813
 [Ecma262PullRequest]: https://github.com/tc39/ecma262/pull/3221
