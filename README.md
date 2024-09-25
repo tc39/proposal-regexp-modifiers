@@ -158,7 +158,7 @@ The following is a high-level list of tasks to progress through each stage of th
 * [ ] [Test262](https://github.com/tc39/test262) acceptance tests have been written for mainline usage scenarios and [merged][Test262PullRequest].  
   * [x] written  
   * [ ] merged  
-* [ ] Two compatible implementations which pass the acceptance tests:  
+* [x] Two compatible implementations which pass the acceptance tests:  
   * [X] [V8][Implementation1] - Shipping in [Chrome 125](https://developer.chrome.com/release-notes/125)/Edge 125
   * [x] [SpiderMonkey][Implementation2] - Shipping in FireFox 130 behind a flag, Shipping in FireFox 132b (Nightly) [unflagged](https://bugzilla.mozilla.org/show_bug.cgi?id=1913752)
   * [ ] JSC  
