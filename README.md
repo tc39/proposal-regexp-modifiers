@@ -160,7 +160,7 @@ The following is a high-level list of tasks to progress through each stage of th
   * [ ] merged  
 * [ ] Two compatible implementations which pass the acceptance tests:  
   * [X] [V8][Implementation1] - Shipping in [Chrome 125](https://developer.chrome.com/release-notes/125)/Edge 125
-  * [ ] [SpiderMonkey][Implementation2] - In Progress
+  * [x] [SpiderMonkey][Implementation2] - Shipping in FireFox 130 behind a flag, Shipping in FireFox 132b (Nightly) [unflagged](https://bugzilla.mozilla.org/show_bug.cgi?id=1913752)
   * [ ] JSC  
   * [ ] [Engine262](https://github.com/engine262/engine262/pull/229)  
 * [x] A [pull request][Ecma262PullRequest] has been sent to tc39/ecma262 with the integrated spec text.  
