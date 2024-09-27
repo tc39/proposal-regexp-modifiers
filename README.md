@@ -147,17 +147,18 @@ The following is a high-level list of tasks to progress through each stage of th
 * [x] [Initial specification text][Specification].  
 * [ ] ~~[Transpiler support][Transpiler] (_Optional_)~~.  
 
-### Stage 3 Entrance Criteria
+### Stage 2.7 Entrance Criteria
 
 * [x] [Complete specification text][Specification].  
 * [x] Designated reviewers have [signed off][Stage3ReviewerSignOff] on the current spec text (1 of 2).  
 * [x] The ECMAScript editor has [signed off][Stage3EditorSignOff] on the current spec text.  
 
+### Stage 3 Entrance Criteria
+
+* [x] [Test262](https://github.com/tc39/test262) acceptance tests have been written for mainline usage scenarios and [merged][Test262PullRequest].  
+
 ### Stage 4 Entrance Criteria
 
-* [ ] [Test262](https://github.com/tc39/test262) acceptance tests have been written for mainline usage scenarios and [merged][Test262PullRequest].  
-  * [x] written  
-  * [ ] merged  
 * [x] Two compatible implementations which pass the acceptance tests:  
   * [X] [V8][Implementation1] - Shipping in [Chrome 125](https://developer.chrome.com/release-notes/125)/Edge 125
   * [x] [SpiderMonkey][Implementation2] - Shipping in FireFox 130 behind a flag, Shipping in FireFox 132b (Nightly) [unflagged](https://bugzilla.mozilla.org/show_bug.cgi?id=1913752)
