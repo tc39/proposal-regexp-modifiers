@@ -6,7 +6,7 @@
 <!--#region:status-->
 ## Status
 
-**Stage:** 3  
+**Stage:** 4  
 **Champion:** Ron Buckton ([@rbuckton](https://github.com/rbuckton))  
 
 _For detailed status of this proposal see [TODO](#todo), below._  
